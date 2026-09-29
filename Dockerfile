@@ -1,5 +1,6 @@
 FROM mcr.microsoft.com/dotnet/sdk:10.0-preview AS build
 WORKDIR /src
+
 COPY . .
 RUN rm -f global.json
 RUN rm -rf obj bin
@@ -10,8 +11,8 @@ FROM mcr.microsoft.com/dotnet/aspnet:10.0-preview AS runtime
 WORKDIR /app
 COPY --from=build /app/out .
 
-# CHỈNH SỬA TẠI ĐÂY: Copy trực tiếp file database và cấp quyền đọc/ghi (Fix lỗi 139)
-COPY fastfood .
+# Lấy file DB từ thư mục src của bước build
+COPY --from=build /src/fastfood .
 RUN chmod 777 fastfood
 
 ENTRYPOINT ["dotnet", "FastFoodWeb.dll"]
