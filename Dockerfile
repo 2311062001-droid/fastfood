@@ -1,13 +1,12 @@
 FROM mcr.microsoft.com/dotnet/sdk:10.0-preview AS build
 WORKDIR /src
 
-# 1. Copy toàn bộ code vào
 COPY . .
 
-# 2. XÓA BỎ các file rác của Windows để tránh xung đột trên Linux (FIX LỖI 155)
+# ĐÂY LÀ DÒNG LỆNH CỐT LÕI ĐỂ FIX LỖI 155: Xóa global.json để gỡ bỏ khóa phiên bản SDK
+RUN rm -f global.json
 RUN rm -rf obj bin
 
-# 3. Chạy khôi phục và đóng gói
 RUN dotnet restore "FastFoodWeb.csproj"
 RUN dotnet publish "FastFoodWeb.csproj" -c Release -o /app/out /p:UseAppHost=false
 
